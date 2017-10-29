@@ -18,12 +18,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ListView listView;
+    public Integer id=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         final EditText name = (EditText)  findViewById(R.id.nameEditText);
         final EditText email = (EditText)  findViewById(R.id.EmailEditText);
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
 
                 User user = new User(
+                        id,
                         name.getText().toString(),
                         email.getText().toString(),
                         Integer.parseInt(age.getText().toString()),
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //get client and call object for the request
         UserClient client = retrofit.create(UserClient.class);
 
-        Call<User> call = client.createAccount(user);
+        Call<User> call = client.createAccount(id,user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
