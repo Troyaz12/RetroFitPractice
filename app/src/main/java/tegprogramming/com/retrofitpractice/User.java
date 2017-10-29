@@ -12,7 +12,7 @@ public class User {
     private int age;
     private String[] topics;
 
-    public User(Integer id, String name, String email, int age, String[] topics) {
+    public User(String name, String email, int age, String[] topics) {
         this.id = id;
         this.name = name;
         this.email = email;

@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
 
                 User user = new User(
-                        id,
+
                         name.getText().toString(),
                         email.getText().toString(),
                         Integer.parseInt(age.getText().toString()),
@@ -54,17 +56,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void sendNetworkRequest(User user){
 
+        //create OkHttp client
+        OkHttpClient.Builder okhttpClientBuilder = new OkHttpClient.Builder();
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        if(BuildConfig.DEBUG)
+            okhttpClientBuilder.addInterceptor(logging);
+
+        okhttpClientBuilder.addInterceptor(logging);
+
+
         //create instance of retrofit
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:3000/")
-                .addConverterFactory(GsonConverterFactory.create());
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okhttpClientBuilder.build());
 
         Retrofit retrofit = builder.build();
 
         //get client and call object for the request
         UserClient client = retrofit.create(UserClient.class);
 
-        Call<User> call = client.createAccount(id,user);
+        Call<User> call = client.createAccount(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
